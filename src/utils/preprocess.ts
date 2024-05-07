@@ -5,9 +5,14 @@ import { readFileSync } from "fs";
  * @param filePath - The path to the file to be read.
  * @returns An array of lines from the file.
  */
-export function readFile(filePath: string): string[] {
+export function readPhoneNumber(filePath: string): string[] {
   const contents = readFileSync(filePath, 'utf-8');
   return contents.split("\n");
+}
+
+export function readMsg(filePath: string): string {
+  const contents = readFileSync(filePath, 'utf-8');
+  return contents;
 }
 
 /**
