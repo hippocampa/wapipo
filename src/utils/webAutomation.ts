@@ -1,25 +1,39 @@
 import { Builder, WebDriver, By, until } from "selenium-webdriver";
 
 export class WapipoMator {
+  private driver: WebDriver;
+  private readonly url = "https://web.whatsapp.com";
   private participants: string[];
   private message: string;
-  private driver: WebDriver;
-  private url: string;
 
   constructor(participants: string[], message: string) {
     this.participants = participants;
     this.message = message;
     this.driver = new Builder().forBrowser("firefox").build();
-    this.url = "https://web.whatsapp.com";
     this.openWebPage(this.url);
     this.driver.sleep(5000);
   }
 
   public async blast() {
-    for (const participant of this.participants) {
-      // console.log(`Blasting message to ${participant}`);
-      await this.send(participant, this.message);
+    const results = this.participants.map((participant) => ({
+      participant,
+      status: "Pending",
+    }));
+
+    for (const result of results) {
+      try {
+        await this.send(result.participant, this.message);
+        result.status = "Success";
+      } catch (error) {
+        console.error(
+          `Failed to send message to ${result.participant}: ${error}`
+        );
+        result.status = "Failed";
+      }
     }
+
+    console.table(results);
+
     this.closeDriver();
   }
 
@@ -31,7 +45,7 @@ export class WapipoMator {
     while (true) {
       try {
         await this.driver.get(
-          `https://web.whatsapp.com/send?phone=${phone}&text=${message}`
+          `${this.url}/send?phone=${phone}&text=${message}`
         );
         await this.driver.wait(
           until.elementLocated(By.xpath(messageXPath)),
@@ -46,7 +60,6 @@ export class WapipoMator {
     }
     const sendButtonXPath = "//button[@aria-label='Kirim']";
     const sendButton = this.driver.findElement(By.xpath(sendButtonXPath));
-    // Scroll the send button into view
     await this.driver.executeScript(
       "arguments[0].scrollIntoView(true);",
       sendButton
