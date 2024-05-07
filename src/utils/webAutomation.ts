@@ -12,6 +12,7 @@ export class WapipoMator {
     this.driver = new Builder().forBrowser("firefox").build();
     this.url = "https://web.whatsapp.com";
     this.openWebPage(this.url);
+    this.driver.sleep(5000);
   }
 
   public async blast() {
@@ -23,14 +24,17 @@ export class WapipoMator {
   }
 
   private async send(phone: string, message: string) {
-    const paneSideId = "pane-side";
+    const messageXPath =
+      "//p[@class='selectable-text copyable-text x15bjb6t x1n2onr6' and @dir='ltr']//span[@class='selectable-text copyable-text' and @data-lexical-text='true']";
     const timeOut = 100000;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       try {
-        await this.driver.get(this.url);
+        await this.driver.get(
+          `https://web.whatsapp.com/send?phone=${phone}&text=${message}`
+        );
         await this.driver.wait(
-          until.elementLocated(By.id(paneSideId)),
+          until.elementLocated(By.xpath(messageXPath)),
           timeOut
         );
         console.debug("Page loaded");
@@ -40,10 +44,16 @@ export class WapipoMator {
         await this.driver.navigate().refresh();
       }
     }
-    await this.driver.get(
-      `https://web.whatsapp.com/send?phone=${phone}&text=${message}`
+    const sendButtonXPath = "//button[@aria-label='Kirim']";
+    const sendButton = this.driver.findElement(By.xpath(sendButtonXPath));
+    // Scroll the send button into view
+    await this.driver.executeScript(
+      "arguments[0].scrollIntoView(true);",
+      sendButton
     );
-    // Code to send message to phone
+    await this.driver.sleep(5000);
+    await sendButton.click();
+    console.debug("Message sent");
     await this.driver.sleep(5000);
   }
 
