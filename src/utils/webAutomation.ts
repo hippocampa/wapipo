@@ -21,15 +21,8 @@ export class WapipoMator {
     }));
 
     for (const result of results) {
-      try {
-        await this.send(result.participant, this.message);
-        result.status = "Success";
-      } catch (error) {
-        console.error(
-          `Failed to send message to ${result.participant}: ${error}`
-        );
-        result.status = "Failed";
-      }
+      const success = await this.send(result.participant, this.message);
+      result.status = success ? "Success" : "Failed";
     }
 
     console.table(results);
@@ -37,12 +30,13 @@ export class WapipoMator {
     this.closeDriver();
   }
 
-  private async send(phone: string, message: string) {
+  private async send(phone: string, message: string): Promise<boolean> {
     const messageXPath =
       "//p[@class='selectable-text copyable-text x15bjb6t x1n2onr6' and @dir='ltr']//span[@class='selectable-text copyable-text' and @data-lexical-text='true']";
     const timeOut = 100000;
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    const maxAttempts = 3;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         await this.driver.get(
           `${this.url}/send?phone=${phone}&text=${message}`
@@ -51,23 +45,35 @@ export class WapipoMator {
           until.elementLocated(By.xpath(messageXPath)),
           timeOut
         );
-        console.debug("Page loaded");
+        console.debug(
+          `Page loaded successfully on attempt ${attempt} for phone number ${phone}`
+        );
         break;
       } catch (error) {
-        console.debug("Waiting for page to load");
+        console.debug(
+          `Attempt ${attempt} to load page for phone number ${phone} failed. Retrying...`
+        );
         await this.driver.navigate().refresh();
+        if (attempt === maxAttempts) {
+          console.error(
+            `Failed to load page after ${maxAttempts} attempts for phone number ${phone}`
+          );
+          return false;
+        }
       }
     }
+
     const sendButtonXPath = "//button[@aria-label='Kirim']";
-    const sendButton = this.driver.findElement(By.xpath(sendButtonXPath));
+    const sendButton = await this.driver.findElement(By.xpath(sendButtonXPath));
     await this.driver.executeScript(
       "arguments[0].scrollIntoView(true);",
       sendButton
     );
     await this.driver.sleep(5000);
     await sendButton.click();
-    console.debug("Message sent");
+    console.debug(`Message sent to phone number ${phone}`);
     await this.driver.sleep(5000);
+    return true;
   }
 
   private async openWebPage(url: string) {
