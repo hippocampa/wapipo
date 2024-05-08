@@ -28,6 +28,10 @@ export function runWapipo() {
       const messagePath = path.resolve(options.message);
       const driverPath = path.resolve(options.driver);
 
+      console.debug("Participants path: ", participantsPath);
+      console.debug("Message path: ", messagePath);
+      console.debug("Driver path: ", driverPath);
+
       const phonenums = readPhoneNumber(participantsPath);
       const message = msgEncoder(messagePath);
       const pphonenums = preprocessAll(phonenums);

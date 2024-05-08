@@ -12,8 +12,12 @@
   },
   "bin": "dist/index.js",
   "devDependencies": {
+    "@types/cacheable-request": "^8.3.2",
+    "@types/http-cache-semantics": "^4.0.4",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.10",
+    "@types/responselike": "^1.0.3",
+    "@types/selenium-standalone": "^7.0.4",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^8.57.0",
@@ -29,7 +33,7 @@
     "dev": "nodemon src/index.ts",
     "lint": "eslint ./src/**/*.ts",
     "test": "jest",
-    "package": "npm run build && pkg -o ./release/wapipo -t node14-linux,node14-macos,node14-win ."
+    "package": "npm run build && pkg -o ./release/wapipo -t node16-linux,node16-macos,node16-win ."
   },
   "dependencies": {
     "@types/selenium-webdriver": "^4.1.22",

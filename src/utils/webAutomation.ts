@@ -11,10 +11,10 @@ export class WapipoMator {
     this.participants = participants;
     this.message = message;
     const options = new firefox.Options();
-    options.setBinary(driverPath);
     this.driver = new Builder()
       .forBrowser("firefox")
       .setFirefoxOptions(options)
+      .setFirefoxService(new firefox.ServiceBuilder(driverPath))
       .build();
     this.openWebPage(this.url);
     this.driver.sleep(5000);
