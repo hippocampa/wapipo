@@ -22,11 +22,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WapipoMator = void 0;
 const selenium_webdriver_1 = require("selenium-webdriver");
 const firefox = __importStar(require("selenium-webdriver/firefox"));
+const path_1 = __importDefault(require("path"));
 class WapipoMator {
+    static DEFAULT_DRIVER_PATHS = {
+        win32: path_1.default.join("C:", "WebDriver", "bin", "geckodriver.exe"),
+        darwin: path_1.default.join("/", "usr", "local", "bin", "geckodriver"),
+        linux: path_1.default.join("/", "usr", "local", "bin", "geckodriver"),
+    };
     driver;
     url = "https://web.whatsapp.com";
     participants;
@@ -34,6 +43,10 @@ class WapipoMator {
     constructor(participants, message, driverPath) {
         this.participants = participants;
         this.message = message;
+        if (!driverPath) {
+            driverPath =
+                WapipoMator.DEFAULT_DRIVER_PATHS[process.platform];
+        }
         const options = new firefox.Options();
         this.driver = new selenium_webdriver_1.Builder()
             .forBrowser("firefox")
