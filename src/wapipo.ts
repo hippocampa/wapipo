@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { readPhoneNumber, preprocessAll } from "./utils/preprocess";
 import { msgEncoder } from "./utils/messageEncoder";
 import { WapipoMator } from "./utils/webAutomation";
+import path from "path";
 
 export function runWapipo() {
   const program = new Command();
@@ -17,11 +18,20 @@ export function runWapipo() {
     .description("Blast (broadcast) a message to a list of participants")
     .option("-p, --participants <dir>", "Directory of the participants file")
     .option("-m, --message <dir>", "Directory of the message file")
+    .option(
+      "-d, --driver <path>",
+      "Path to the webdriver",
+      "/usr/local/bin/geckodriver"
+    )
     .action(async (options) => {
-      const phonenums = readPhoneNumber(options.participants);
-      const message = msgEncoder(options.message);
+      const participantsPath = path.resolve(options.participants);
+      const messagePath = path.resolve(options.message);
+      const driverPath = path.resolve(options.driver);
+
+      const phonenums = readPhoneNumber(participantsPath);
+      const message = msgEncoder(messagePath);
       const pphonenums = preprocessAll(phonenums);
-      const wapipo = new WapipoMator(pphonenums, message);
+      const wapipo = new WapipoMator(pphonenums, message, driverPath);
       await wapipo.blast();
     });
 

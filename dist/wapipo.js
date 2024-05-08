@@ -15,11 +15,12 @@ function runWapipo() {
         .description("Blast (broadcast) a message to a list of participants")
         .option("-p, --participants <dir>", "Directory of the participants file")
         .option("-m, --message <dir>", "Directory of the message file")
+        .option("-d, --driver <path>", "Path to the webdriver", "/usr/local/bin/geckodriver")
         .action(async (options) => {
         const phonenums = (0, preprocess_1.readPhoneNumber)(options.participants);
         const message = (0, messageEncoder_1.msgEncoder)(options.message);
         const pphonenums = (0, preprocess_1.preprocessAll)(phonenums);
-        const wapipo = new webAutomation_1.WapipoMator(pphonenums, message);
+        const wapipo = new webAutomation_1.WapipoMator(pphonenums, message, options.driver);
         await wapipo.blast();
     });
     program.parse(process.argv);

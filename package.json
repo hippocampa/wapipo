@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "A web automation tool to broadcast whatsapp messages.",
   "main": "dist/index.js",
+  "pkg": {
+    "assets": [
+      "node_modules/selenium-webdriver/lib/atoms/is-displayed.js",
+      "node_modules/selenium-webdriver/lib/atoms/get-attribute.js",
+      "node_modules/selenium-webdriver/lib/atoms/*.js"
+    ]
+  },
   "bin": "dist/index.js",
   "devDependencies": {
     "@types/jest": "^29.5.12",

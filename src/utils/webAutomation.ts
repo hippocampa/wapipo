@@ -1,4 +1,5 @@
 import { Builder, WebDriver, By, until } from "selenium-webdriver";
+import * as firefox from "selenium-webdriver/firefox";
 
 export class WapipoMator {
   private driver: WebDriver;
@@ -6,10 +7,15 @@ export class WapipoMator {
   private participants: string[];
   private message: string;
 
-  constructor(participants: string[], message: string) {
+  constructor(participants: string[], message: string, driverPath: string) {
     this.participants = participants;
     this.message = message;
-    this.driver = new Builder().forBrowser("firefox").build();
+    const options = new firefox.Options();
+    options.setBinary(driverPath);
+    this.driver = new Builder()
+      .forBrowser("firefox")
+      .setFirefoxOptions(options)
+      .build();
     this.openWebPage(this.url);
     this.driver.sleep(5000);
   }
