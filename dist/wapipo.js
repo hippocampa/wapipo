@@ -12,21 +12,21 @@ const path_1 = __importDefault(require("path"));
 function runWapipo() {
     const program = new commander_1.Command();
     program
-        .version("1.0.0") // Add version information
+        .name("wapipo") // Add the name of the program
+        .version("1.1.0") // Add version information
         .description("Wapipo: A CLI tool for broadcasting whatsapp messages to a list of participants. Author: I Gede Teguh Satya Dharma <tsdhrm@outlook.com>"); // Add a description
     program
         .command("blast")
         .description("Blast (broadcast) a message to a list of participants")
         .option("-p, --participants <dir>", "Directory of the participants file")
         .option("-m, --message <dir>", "Directory of the message file")
-        .option("-d, --driver <path>", "Path to the webdriver", "/usr/local/bin/geckodriver")
+        .option("-d, --driver <path>", "Path to the webdriver")
         .action(async (options) => {
         const participantsPath = path_1.default.resolve(options.participants);
         const messagePath = path_1.default.resolve(options.message);
-        const driverPath = path_1.default.resolve(options.driver);
-        console.debug("Participants path: ", participantsPath);
-        console.debug("Message path: ", messagePath);
-        console.debug("Driver path: ", driverPath);
+        const driverPath = options.driver
+            ? path_1.default.resolve(options.driver)
+            : undefined;
         const phonenums = (0, preprocess_1.readPhoneNumber)(participantsPath);
         const message = (0, messageEncoder_1.msgEncoder)(messagePath);
         const pphonenums = (0, preprocess_1.preprocessAll)(phonenums);

@@ -1,15 +1,31 @@
 import { Builder, WebDriver, By, until } from "selenium-webdriver";
 import * as firefox from "selenium-webdriver/firefox";
+import path from "path";
 
 export class WapipoMator {
+  private static readonly DEFAULT_DRIVER_PATHS = {
+    win32: path.join("C:", "WebDriver", "bin", "geckodriver.exe"),
+    darwin: path.join("/", "usr", "local", "bin", "geckodriver"),
+    linux: path.join("/", "usr", "local", "bin", "geckodriver"),
+  };
   private driver: WebDriver;
   private readonly url = "https://web.whatsapp.com";
   private participants: string[];
   private message: string;
 
-  constructor(participants: string[], message: string, driverPath: string) {
+  constructor(
+    participants: string[],
+    message: string,
+    driverPath: string | undefined
+  ) {
     this.participants = participants;
     this.message = message;
+    if (!driverPath) {
+      driverPath =
+        WapipoMator.DEFAULT_DRIVER_PATHS[
+          process.platform as keyof typeof WapipoMator.DEFAULT_DRIVER_PATHS
+        ];
+    }
     const options = new firefox.Options();
     this.driver = new Builder()
       .forBrowser("firefox")
