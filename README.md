@@ -20,9 +20,9 @@ Maka Anda perlu terlebih dahulu mendownload kedua *software* tersebut sesuai den
 
 Panduan instalasi dibagi berdasarkan *platform* yang didukung oleh wapipo:
 
-1. [Linux](#instalasi-pada-platform-linux)
+1. [Linux](#instalasi-pada-platform-linux) (segera hadir)
 2. [Mac](#instalasi-pada-platform-mac) (segera hadir)
-3. [Windows](#instalasi-pada-platform-windows) (segera hadir)
+3. [Windows](#instalasi-pada-platform-windows)
 
 ### Instalasi pada platform Windows
 
